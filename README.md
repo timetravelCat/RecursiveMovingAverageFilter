@@ -1,37 +1,14 @@
-# Compact Modern C++ Template
+# Recursive Moving Average Filter
 
-A quick C++ template for modern CMake projects, aimed to be an easy to use
-starting point.
-
-This is my personal take on such a type of template, thus I might not use the
-best practices or you might disagree with how I do things. Any and all feedback
-is greatly appreciated!
+An fast recursive moving average filter appropriate for large-sample scale.
 
 ## Features
 
-* Modern **CMake** configuration and project, which, to the best of my
-knowledge, uses the best practices,
-
-* An example of a **Clang-Format** config, inspired from the base *Google* model,
-with minor tweaks. This is aimed only as a starting point, as coding style
-is a subjective matter, everyone is free to either delete it (for the *LLVM*
-default) or supply their own alternative,
-
-* **Static analyzers** integration, with *Clang-Tidy* and *Cppcheck*, the former
-being the default option,
-
-* **Doxygen** support, through the `ENABLE_DOXYGEN` option, which you can enable
-if you wish to use it,
-
-* **Unit testing** support, through *GoogleTest* or *Catch2*,
-
-* **Permissive license** to allow you to integrate it as easily as possible. The
-template is licensed under the [Unlicense](https://unlicense.org/),
-
-* Options to build as a header-only library or executable, not just a static or
-shared library.
-
-* **Ccache** integration, for speeding up rebuild times
+* **Recursive implements**
+* **Numerically stable**
+* **written in c++, however use c lib only. (no stdlibc++)**
+* **Fast in accepting new samples**
+* **Requires lots of memory as much as non-recursive algorithms for numerical stable**
 
 ## Getting Started
 
@@ -55,42 +32,15 @@ template *as-is*, meaning using the versions recommended here, then you will nee
 ### Installing
 
 It is fairly easy to install the project, all you need to do is clone if from
-[GitHub](https://github.com/filipdutescu/modern-cpp-template) or
-[generate a new repository from it](https://github.com/filipdutescu/modern-cpp-template/generate)
+[GitHub](https://github.com/timetravelerCat/RecursiveMovingAverageFilter) or
+[generate a new repository from it](https://github.com/timetravelerCat/RecursiveMovingAverageFilter/generate)
 (also on **GitHub**).
 
 If you wish to clone the repository, rather than generate from it, you simply need
 to run:
 
 ```bash
-git clone https://github.com/filipdutescu/modern-cpp-template/
-```
-
-After finishing getting a copy of the project, with any of the methods above, create
-a new folder in the `include/` folder, with the name of your project.  Edit
-`cmake/SourcesAndHeaders.cmake` to add your files.
-
-You will also need to rename the `cmake/ProjectConfig.cmake.in` file to start with
-the ***exact name of your project***. Such as `cmake/MyNewProjectConfig.cmake.in`.
-
-Finally, change `"Project"` from `CMakeLists.txt`, from
-
-```cmake
-project(
-  "Project"
-  VERSION 0.1.0
-  LANGUAGES CXX
-)
-```
-
-to the ***exact name of your project***, i.e. using the previous name it will become:
-
-```cmake
-project(
-  MyNewProject
-  VERSION 0.1.0
-  LANGUAGES CXX
-)
+git clone https://github.com/timetravelerCat/RecursiveMovingAverageFilter/
 ```
 
 To install an already built project, you need to run the `install` target with CMake.
@@ -166,7 +116,18 @@ ctest -C Release  # or `ctest -C Debug` or any other configuration you wish to t
 
 This project makes use of [SemVer](http://semver.org/) for versioning. A list of
 existing versions can be found in the
-[project's releases](https://github.com/filipdutescu/modern-cpp-template/releases).
+[project's releases](https://github.com/timetravelerCat/RecursiveMovingAverageFilter/releases).
+
+
+## Development Requirements
+
+* **CMake v3.15+** - found at [https://cmake.org/](https://cmake.org/)
+
+* **Static analyzers** *Cppcheck*
+
+* **Unit testing** *Catch2*
+
+* **Ccache** 
 
 ## Authors
 
