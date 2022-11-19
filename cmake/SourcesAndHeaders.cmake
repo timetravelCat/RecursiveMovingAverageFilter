@@ -1,17 +1,17 @@
 set(sources
-    src/tmp.cpp
+    src/Buffer.cpp
 )
 
-set(exe_sources
-		src/main.cpp
-		${sources}
-)
+# set(exe_sources
+# 		src/main.cpp
+# 		${sources}
+# )
 
 set(headers
-    include/project/tmp.hpp
+    include/container/BufferQueue.hpp
+    include/container/Buffer.hpp
 )
 
 set(test_sources
-  # src/tmp_gtest.cpp
-  src/tmp_catch2.cpp
+  src/test_BufferQueue.cpp
 )

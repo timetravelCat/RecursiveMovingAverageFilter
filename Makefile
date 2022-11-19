@@ -32,9 +32,9 @@ help:
 
 test: ## run tests quickly with ctest
 	rm -rf build/
-	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DRMAF_ENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
-	cmake --build build --config Release
-	cd build/ && ctest -C Release -VV
+	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DRMAF_ENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Debug"
+	cmake --build build --config Debug
+	cd build/ && ctest -C Debug -VV
 
 docs: ## generate Doxygen HTML documentation, including API docs
 	rm -rf docs/
@@ -46,7 +46,7 @@ docs: ## generate Doxygen HTML documentation, including API docs
 
 install: ## install the package to the `INSTALL_LOCATION`
 	rm -rf build/
-	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION)
+	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DCMAKE_BUILD_TYPE="Release"
 	cmake --build build --config Release
 	cmake --build build --target install --config Release
 
