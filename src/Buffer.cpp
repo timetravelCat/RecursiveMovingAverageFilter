@@ -27,7 +27,6 @@ namespace SMAF
 
   void PrintBufferStatus()
   {
-    // Todo Change to List
     printf("container instance : %d, total buffer %d \n", _num_instances, _buffer_bytes);
     if (_num_instances > MAX_INSTANCE_NUM)
       printf("Maximum instance log %d exceeded \n", MAX_INSTANCE_NUM);

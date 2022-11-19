@@ -38,12 +38,12 @@ namespace SMAF
         _capacity = capacity;
     }
 
-    bool isEmpty()
+    bool isEmpty() const
     {
       return (_size == 0);
     }
 
-    bool isFull()
+    bool isFull() const
     {
       return (_capacity == _size);
     }
@@ -69,8 +69,9 @@ namespace SMAF
     {
       if (_size == 0)
         return false;
-
-      *result = _data[_front];
+        
+      if (result)
+        *result = _data[_front];
       _front = (_front + 1) % _capacity;
       _size--;
 
@@ -78,15 +79,17 @@ namespace SMAF
     }
 
     // Get recent data
-    T recent()
+    T recent(int32_t idx = 0) const
     {
-      return _data[_rear];
+      assert(idx < _capacity);
+      const int32_t _idx = (_rear - idx) % _capacity;
+      return _data[_idx < 0 ? _idx + _capacity : _idx];
     }
 
     // Get old data
-    T old()
+    T old(int32_t idx = 0) const
     {
-      return _data[_front];
+      return _data[(_front + idx) % _capacity];
     }
 
    private:
