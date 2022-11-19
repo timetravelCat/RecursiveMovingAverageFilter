@@ -1,5 +1,6 @@
 set(sources
     src/Buffer.cpp
+    # src/FixedFloat.cpp
 )
 
 # set(exe_sources
@@ -14,4 +15,5 @@ set(headers
 
 set(test_sources
   src/test_BufferQueue.cpp
+  src/test_FixedFloat.cpp
 )
