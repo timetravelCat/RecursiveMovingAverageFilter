@@ -37,7 +37,10 @@ namespace RMAF
       _front = 0;
       _size = 0;
       if (_capacity > 0)
+      {
+        assert(capacity <= static_cast<int32_t>(Buffer));
         _capacity = capacity;
+      }
     }
 
     bool isEmpty() const
@@ -71,7 +74,7 @@ namespace RMAF
     {
       if (_size == 0)
         return false;
-        
+
       if (result)
         *result = _data[_front];
       _front = (_front + 1) % _capacity;
@@ -99,6 +102,6 @@ namespace RMAF
     int32_t _front{ 0 };
     int32_t _size{ 0 };
     int32_t _capacity{ 0 };
-    T _data[Buffer] = {};
+    T _data[Buffer];
   };
 }  // namespace RMAF

@@ -4,16 +4,16 @@
 
 namespace RMAF
 {
-  // limit [0.1,1.0) => valid digits : 10
-  // limit [1,10) => valid digits : 9
-  // limit [10,100) => valid digits : 8
-  // limit [100,1000) => valid digits : 7
+  // limit [0.1,1.0) => valid digits : 9
+  // limit [1,10) => valid digits : 8
+  // limit [10,100) => valid digits : 7
+  // limit [100,1000) => valid digits : 6
   // ...
   constexpr uint8_t getDigits(float limit)
   {
     limit = limit > 0.f ? limit : -limit;
 
-    uint8_t res{ 10 };
+    uint8_t res{ 9 };
     while (limit > 1.0f)
     {
       res--;
@@ -39,7 +39,7 @@ namespace RMAF
   constexpr float getLimits(uint8_t digits)
   {
     float res = 1.0f;
-    int16_t remain = int16_t(10) - int16_t(digits);
+    int16_t remain = int16_t(9) - int16_t(digits);
 
     while (remain > 0)
     {
@@ -96,12 +96,12 @@ namespace RMAF
       template<typename T>
       FixedSum operator/(const T& data) const
       {
-        FixedSum{ _sum / data };
+        return FixedSum{ _sum / data };
       }
       template<typename T>
       FixedSum operator*(const T& data) const
       {
-        FixedSum{ _sum * data };
+        return FixedSum{ _sum * data };
       }
 
       template<typename T>
@@ -167,7 +167,6 @@ namespace RMAF
         _sum -= data._sum;
       }
 
-     private:
       int64_t _sum{ 0 };
     };
 
