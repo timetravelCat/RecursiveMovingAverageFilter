@@ -44,6 +44,8 @@ TEST_CASE("FixedFloat Class")
   sum -= 4.0f;
   REQUIRE(sum.get() == 1.0f + 2.0f - 4.0f);
 
-  REQUIRE((_float1 + 7.0f).get() == 14.0f);
 
+  FixedFloat<8> _float2{ 5.0f };
+  REQUIRE((_float1 + 7.0f).get() == 14.0f);
+  REQUIRE((_float1 + _float2).get() == 12.0f);
 }

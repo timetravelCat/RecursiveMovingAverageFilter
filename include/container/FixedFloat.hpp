@@ -176,23 +176,21 @@ namespace SMAF
     explicit FixedFloat() = default;
     explicit FixedFloat(const float& data)
     {
-      _data = data > _limit ? _limit : (data < -_limit ? -_limit : data);
+      const float _data = data > _limit ? _limit : (data < -_limit ? -_limit : data);
       _fixed_float = static_cast<int32_t>(_data * nominator());
     }
     explicit FixedFloat(const FixedFloat& copy)
     {
-      _data = copy._data;
       _fixed_float = copy._fixed_float;
     }
 
     void operator=(const float& data)
     {
-      _data = data > _limit ? _limit : (data < -_limit ? -_limit : data);
+      const float _data = data > _limit ? _limit : (data < -_limit ? -_limit : data);
       _fixed_float = static_cast<int32_t>(_data * nominator());
     }
     void operator=(const FixedFloat& copy)
     {
-      _data = copy._data;
       _fixed_float = copy._fixed_float;
     }
 
@@ -228,7 +226,7 @@ namespace SMAF
     }
     float getFloat() const
     {
-      return _data;
+      return static_cast<float>(_fixed_float) / nominator();
     }
 
    private:
@@ -246,7 +244,6 @@ namespace SMAF
       return res;
     }
 
-    float _data{ 0.0f };
     int32_t _fixed_float{ 0 };
   };
 };  // namespace SMAF
