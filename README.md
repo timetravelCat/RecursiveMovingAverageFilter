@@ -9,25 +9,86 @@ An fast recursive moving average filter appropriate for large-sample scale.
 * **written in c++, however use c lib only. (no stdlibc++)**
 * **Fast in accepting new samples**
 * **Requires lots of memory as much as non-recursive algorithms for numerical stable**
+* **Supports buffer usage status for queue**
+
+## limitations
+* **Requires valid range of floating point, such as [-1,1] or [-10,10]**
+* **Accuracy depends on range**
+* **internally, float converted to int32_t, and stored in queue**
+* **do not support dynamic buffer (memory decided by template parameter)**
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local
-machine for development and testing purposes.
+```C++
+#include <rmaf/RecursiveMovingAverageFilter.hpp>
+#include <rmaf/RecursiveMovingAverageFilterND.hpp>
+
+using namespace RMAF;
+
+int main(int argc, char const *argv[])
+{
+    // A simple 1D moving average filter
+    // Specify range of data. assumed you have data with range [-10,10]
+    // Specify Buffer size(200) & capacity(5) size (capacity can be changed by reset api)
+    RecursiveMovingAverageFilter<getDigits(10.0f), 200> _rmaf{ 5, "rmaf 1" };
+
+    // Insert data, return false if not pull
+    _rmaf.push(0.0f);
+    _rmaf.push(1.0f);
+    _rmaf.push(2.0f);
+    _rmaf.push(3.0f);
+    _rmaf.push(4.0f);
+
+    // return true if full
+    // Internally, Algorithm implemented as recursive,
+    // buffer = buffer + new - old
+    // In order to preserve long time numerical stability, requires queue size as much as capacity.
+    float result;
+    if(rmaf.push(5.0f, &result)) {
+        // check result data, (1+2+3+4+5)/5 saved in result.
+    }
+
+    // Capacity could be changed by reset method.
+    // requires at least 3 samples before return true.
+    _rmaf.reset(3);
+
+    // You Can Check (most)memory required by queue.
+    // All instances (limits to 100, change MAX_INSTANCE_NUM in Buffer.cpp ) with name will be printed to your console.
+    PrintBufferStatus();
+    
+    // N dimension overlapped moving average filter.
+    // 3-Dimension limits with 10.0f, with buffer 10,5,3 / capacity 2,3,2 initialization
+    RecursiveMovingAverageFilterND<getDigits(10.0f), 10, 5, 3> _RecursiveMovingAverageFilterND{ "test_RMAFND", 2, 3, 2 };
+
+    // Data Looks like
+    // first queue 1.0 / 2.0 / 3.0 / 4.0 / 5.0 / 6.0 / 7.0 / 8.0
+    // second queue         2.5 / 3.5 / 4.5 / 5.5 / 6.5 / 7.5       //average of 2 sample
+    // third queue                      4.5 / 5.5 / 6.5             //average of 3 sample
+    // result                                   6.0                 //average of 2 sample
+    _RecursiveMovingAverageFilterND.push(1.0f);
+    _RecursiveMovingAverageFilterND.push(2.0f);
+    _RecursiveMovingAverageFilterND.push(3.0f);
+    _RecursiveMovingAverageFilterND.push(4.0f);
+    _RecursiveMovingAverageFilterND.push(5.0f);
+    _RecursiveMovingAverageFilterND.push(6.0f);
+    _RecursiveMovingAverageFilterND.push(7.0f);
+
+    if(_RecursiveMovingAverageFilterND.push(8.0f, &result))
+    {
+        // Check result data, should be 6.0
+    }
+
+
+  return 0;
+}
+```
 
 ### Prerequisites
-
-This project is meant to be only a template, thus versions of the software used
-can be change to better suit the needs of the developer(s). If you wish to use the
-template *as-is*, meaning using the versions recommended here, then you will need:
 
 * **CMake v3.15+** - found at [https://cmake.org/](https://cmake.org/)
 
 * **C++ Compiler** - needs to support at least the **C++11** standard, i.e. *MSVC*,
 *GCC*, *Clang*
-
-> ***Note:*** *You also need to be able to provide ***CMake*** a supported
-[generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html).*
 
 ### Installing
 
@@ -73,23 +134,6 @@ More options that you can set for the project can be found in the
 options additional configuration may be needed in their respective `*.cmake` files
 (i.e. Conan needs the `CONAN_REQUIRES` and might need the `CONAN_OPTIONS` to be setup
 for it work correctly; the two are set in the [`cmake/Conan.cmake` file](cmake/Conan.cmake)).
-
-## Generating the documentation
-
-In order to generate documentation for the project, you need to configure the build
-to use Doxygen. This is easily done, by modifying the workflow shown above as follows:
-
-```
-make docs
-```
-or
-```bash
-mkdir build/ && cd build/
-cmake .. -D<project_name>_ENABLE_DOXYGEN=1 -DCMAKE_INSTALL_PREFIX=/absolute/path/to/custom/install/directory
-cmake --build . --target doxygen-docs
-```
-
-> ***Note:*** *This will generate a `docs/` directory in the **project's root directory**.*
 
 ## Running the tests
 

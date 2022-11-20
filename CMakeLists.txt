@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   RMAF
-  VERSION 0.8.0
+  VERSION 1.0.0
   LANGUAGES CXX
 )
 
