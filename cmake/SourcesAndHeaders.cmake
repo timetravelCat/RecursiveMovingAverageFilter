@@ -18,4 +18,5 @@ set(test_sources
   src/test_BufferQueue.cpp
   src/test_FixedFloat.cpp
   src/test_RMAF.cpp
+  src/test_RMAFND.cpp
 )

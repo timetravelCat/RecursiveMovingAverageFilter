@@ -6,21 +6,41 @@
 
 namespace RMAF
 {
+  namespace internal
+  {
+    template<typename T>
+    class QueueInterface
+    {
+     public:
+      virtual ~QueueInterface() = default;
+      virtual void reset(int32_t capacity = 0) = 0;
+      virtual bool isEmpty() const = 0;
+      virtual bool isFull() const = 0;
+      virtual bool enqueue(const T& in, T* out = nullptr) = 0;
+      virtual bool dequeue(T* result) = 0;
+      virtual T recent(int32_t idx = 0) const = 0;
+      virtual T old(int32_t idx = 0) const = 0;
+      virtual int32_t getCapacity() const = 0;
+    };
+  }  // namespace internal
+
   /**
    * @brief A simple template Queue class
-   * https://github.com/sougatadafader/Circular-Queue/blob/master/queue_array.c
    *
    * @tparam T type of data
    * @tparam Buffer
    */
   template<typename T, uint32_t Buffer>
-  class BufferQueue : public internal::BufferImpl<BufferQueue<T, Buffer>>
+  class BufferQueue : public internal::BufferImpl<BufferQueue<T, Buffer>>, public internal::QueueInterface<T>
   {
    public:
     using Parent = internal::BufferImpl<BufferQueue<T, Buffer>>;
     explicit BufferQueue(int32_t capacity, const char* name = "") : Parent(name), _capacity(capacity)
     {
-      assert(_capacity >= 1);
+      assert(_capacity >= 0);
+      if(_capacity == 0)
+        _capacity = Buffer;
+
       assert(strlen(name) <= 16);
       assert(capacity <= static_cast<int32_t>(Buffer));
     };
@@ -31,7 +51,7 @@ namespace RMAF
       return sizeof(T) * Buffer;
     }
 
-    void reset(int32_t capacity = 0)
+    void reset(int32_t capacity = 0) override
     {
       _rear = -1;
       _front = 0;
@@ -43,18 +63,18 @@ namespace RMAF
       }
     }
 
-    bool isEmpty() const
+    bool isEmpty() const override
     {
       return (_size == 0);
     }
 
-    bool isFull() const
+    bool isFull() const override
     {
       return (_capacity == _size);
     }
 
     // if true, queue is full and return rear data
-    bool enqueue(const T& in, T* out = nullptr)
+    bool enqueue(const T& in, T* out = nullptr) override
     {
       bool res{ false };
       if (isFull())
@@ -70,7 +90,7 @@ namespace RMAF
     }
 
     // if false, queue size is already zero
-    bool dequeue(T* result)
+    bool dequeue(T* result) override
     {
       if (_size == 0)
         return false;
@@ -84,7 +104,7 @@ namespace RMAF
     }
 
     // Get recent data
-    T recent(int32_t idx = 0) const
+    T recent(int32_t idx = 0) const override
     {
       assert(idx < _capacity);
       const int32_t _idx = (_rear - idx) % _capacity;
@@ -92,9 +112,14 @@ namespace RMAF
     }
 
     // Get old data
-    T old(int32_t idx = 0) const
+    T old(int32_t idx = 0) const override
     {
       return _data[(_front + idx) % _capacity];
+    }
+
+    int32_t getCapacity() const override
+    {
+      return _capacity;
     }
 
    private:

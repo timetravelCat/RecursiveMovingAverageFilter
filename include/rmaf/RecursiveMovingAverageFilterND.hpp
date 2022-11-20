@@ -1,9 +1,109 @@
 #pragma once
 
 #include <stdarg.h>
+
 #include "RecursiveMovingAverageFilter.hpp"
 
 namespace RMAF
 {
+  template<uint8_t digits, uint32_t... max_capacity>
+  class RecursiveMovingAverageFilterND
+  {
+   public:
+    static constexpr uint32_t SIZE = sizeof...(max_capacity);
+    static constexpr uint32_t BUFFERS[] = { max_capacity... };
 
+    explicit RecursiveMovingAverageFilterND() = default;
+    explicit RecursiveMovingAverageFilterND(const char* name, int32_t capacities...)
+    {
+      static_assert(SIZE <= 10);
+
+      _queue[0] = new BufferQueue<FixedFloat<digits>, BUFFERS[0]>(capacities, name);
+
+      va_list args;
+
+      va_start(args, capacities);
+
+      if constexpr (SIZE >= 2)
+        _queue[1] = new BufferQueue<FixedFloat<digits>, BUFFERS[1]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 3)
+        _queue[2] = new BufferQueue<FixedFloat<digits>, BUFFERS[2]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 4)
+        _queue[3] = new BufferQueue<FixedFloat<digits>, BUFFERS[3]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 5)
+        _queue[4] = new BufferQueue<FixedFloat<digits>, BUFFERS[4]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 6)
+        _queue[5] = new BufferQueue<FixedFloat<digits>, BUFFERS[5]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 7)
+        _queue[6] = new BufferQueue<FixedFloat<digits>, BUFFERS[6]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 8)
+        _queue[7] = new BufferQueue<FixedFloat<digits>, BUFFERS[7]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 9)
+        _queue[8] = new BufferQueue<FixedFloat<digits>, BUFFERS[8]>(va_arg(args, int32_t), name);
+      if constexpr (SIZE >= 10)
+        _queue[9] = new BufferQueue<FixedFloat<digits>, BUFFERS[9]>(va_arg(args, int32_t), name);
+
+      va_end(args);
+    }
+
+    void reset(int32_t capacities...)
+    {
+      _queue[0]->reset(capacities);
+
+      va_list args;
+      va_start(args, capacities);
+
+      for (uint32_t i = 1; i < SIZE; i++)
+        _queue[i]->reset(va_arg(args, int32_t));
+
+      va_end(args);
+
+      for (uint32_t i = 0; i < SIZE; i++)
+        _FixedSum[i]._sum = 0;
+    }
+
+    bool push(const float& in, float* result = nullptr)
+    {
+      return push(in, result, 0);
+    }
+
+    ~RecursiveMovingAverageFilterND()
+    {
+      for (uint32_t i = 0; i < SIZE; i++)
+        delete _queue[i];
+    }
+
+   private:
+    bool push(const float& in, float* result, uint32_t depth)
+    {
+      bool res = false;
+      FixedFloat<digits> fixedFloat{ in };
+      _FixedSum[depth] += fixedFloat;
+
+      FixedFloat<digits> out;
+      if (_queue[depth]->enqueue(FixedFloat<digits>{ in }, &out))
+      {
+        _FixedSum[depth] -= out;
+        const float _in = (_FixedSum[depth] / _queue[depth]->getCapacity()).get();
+
+        depth++;
+
+        if (depth < SIZE)
+        {
+          return push(_in, result, depth);
+        }
+        else  // depth == DEPTH
+        {
+          if (result)
+            *result = _in;
+          res = true;
+        }
+      }
+
+      return res;
+    }
+
+    internal::QueueInterface<FixedFloat<digits>>* _queue[SIZE] = { nullptr };
+    typename FixedFloat<digits>::FixedSum _FixedSum[SIZE];
+  };
 };  // namespace RMAF

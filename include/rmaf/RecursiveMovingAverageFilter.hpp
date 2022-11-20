@@ -11,8 +11,7 @@ namespace RMAF
    public:
     explicit RecursiveMovingAverageFilter() = delete;
     explicit RecursiveMovingAverageFilter(int32_t capacity, const char* name = "")
-        : _queue(capacity, name),
-          _capacity(capacity)
+        : _queue(capacity, name)
     {
     }
 
@@ -26,7 +25,7 @@ namespace RMAF
       {
         _FixedSum -= out;
         if (result)
-          *result = (_FixedSum / _capacity).get();
+          *result = (_FixedSum / _queue.getCapacity()).get();
         return true;
       }
       return false;
@@ -36,12 +35,10 @@ namespace RMAF
     {
       _queue.reset(capacity);
       _FixedSum._sum = 0;
-      _capacity = capacity;
     }
 
    private:
     typename FixedFloat<digits>::FixedSum _FixedSum;
     BufferQueue<FixedFloat<digits>, max_capacity> _queue;
-    int32_t _capacity;
   };
 };  // namespace RMAF

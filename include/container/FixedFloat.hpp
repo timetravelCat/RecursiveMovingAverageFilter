@@ -178,7 +178,7 @@ namespace RMAF
       const float _data = data > _limit ? _limit : (data < -_limit ? -_limit : data);
       _fixed_float = static_cast<int32_t>(_data * nominator());
     }
-    explicit FixedFloat(const FixedFloat& copy)
+    FixedFloat(const FixedFloat& copy)
     {
       _fixed_float = copy._fixed_float;
     }
