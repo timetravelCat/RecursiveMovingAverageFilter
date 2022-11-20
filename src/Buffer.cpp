@@ -2,7 +2,7 @@
 
 #define MAX_INSTANCE_NUM 100
 
-namespace SMAF
+namespace RMAF
 {
   int32_t _buffer_bytes{ 0 };
   int32_t _num_instances{ 0 };
@@ -34,4 +34,4 @@ namespace SMAF
       if (internal::_buffers[i])
         internal::_buffers[i]->print();
   }
-}  // namespace SMAF
+}  // namespace RMAF

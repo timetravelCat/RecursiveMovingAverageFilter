@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace SMAF
+namespace RMAF
 {
   // limit [0.1,1.0) => valid digits : 10
   // limit [1,10) => valid digits : 9
@@ -246,4 +246,4 @@ namespace SMAF
 
     int32_t _fixed_float{ 0 };
   };
-};  // namespace SMAF
+};  // namespace RMAF

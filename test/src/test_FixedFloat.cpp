@@ -3,7 +3,7 @@
 
 #include "container/FixedFloat.hpp"
 
-using namespace SMAF;
+using namespace RMAF;
 
 TEST_CASE("FixedFloat Class")
 {

@@ -5,9 +5,9 @@
 
 TEST_CASE("Queue Class")
 {
-  SMAF::BufferQueue<float, 200> BufferQueue1(100, "queue1");
-  SMAF::BufferQueue<float, 300> BufferQueue2(100, "queue2");
-  SMAF::PrintBufferStatus();
+  RMAF::BufferQueue<float, 200> BufferQueue1(100, "queue1");
+  RMAF::BufferQueue<float, 300> BufferQueue2(100, "queue2");
+  RMAF::PrintBufferStatus();
 
   BufferQueue1.enqueue(10.0f);
   BufferQueue1.enqueue(20.0f);

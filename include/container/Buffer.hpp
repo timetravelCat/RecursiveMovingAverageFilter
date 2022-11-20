@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace SMAF
+namespace RMAF
 {
   namespace internal
   {
@@ -57,4 +57,4 @@ namespace SMAF
 
   void PrintBufferStatus();
 
-}  // namespace SMAF
+}  // namespace RMAF

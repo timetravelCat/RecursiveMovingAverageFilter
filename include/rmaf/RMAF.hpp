@@ -3,7 +3,7 @@
 #include <container/BufferQueue.hpp>
 #include <container/FixedFloat.hpp>
 
-namespace SMAF
+namespace RMAF
 {
 
 };

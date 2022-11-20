@@ -4,7 +4,7 @@
 
 #include "Buffer.hpp"
 
-namespace SMAF
+namespace RMAF
 {
   /**
    * @brief A simple template Queue class
@@ -101,4 +101,4 @@ namespace SMAF
     int32_t _capacity{ 0 };
     T _data[Buffer] = {};
   };
-}  // namespace SMAF
+}  // namespace RMAF
