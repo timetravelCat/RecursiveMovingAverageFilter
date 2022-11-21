@@ -87,7 +87,7 @@ int main(int argc, char const *argv[])
 
 * **CMake v3.15+** - found at [https://cmake.org/](https://cmake.org/)
 
-* **C++ Compiler** - needs to support at least the **C++11** standard, i.e. *MSVC*,
+* **C++ Compiler** - needs to support at least the **C++14** standard, i.e. *MSVC*,
 *GCC*, *Clang*
 
 ### Installing

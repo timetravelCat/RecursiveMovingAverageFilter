@@ -47,5 +47,7 @@ TEST_CASE("RMAFND")
   REQUIRE(_RecursiveMovingAverageFilterND.push(6.0f, &res) == true);
   REQUIRE(res == 4.5f);
 
+  RecursiveMovingAverageFilterND<getDigits(1.0f), 10, 20, 30> _RecursiveMovingAverageFilterND2{ "test_RMAFND2" };
+
   PrintBufferStatus();
 }

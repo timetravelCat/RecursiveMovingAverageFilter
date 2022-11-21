@@ -1,4 +1,4 @@
-.PHONY: install coverage test docs help clean
+.PHONY: install coverage test rtest docs help clean
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -35,6 +35,12 @@ test: ## run tests quickly with ctest
 	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DRMAF_ENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Debug"
 	cmake --build build --config Debug
 	cd build/ && ctest -C Debug -VV
+
+rtest: ## release test
+	rm -rf build/
+	cmake -Bbuild -DCMAKE_INSTALL_PREFIX=$(INSTALL_LOCATION) -DRMAF_ENABLE_UNIT_TESTING=1 -DCMAKE_BUILD_TYPE="Release"
+	cmake --build build --config Release
+	cd build/ && ctest -C Release -VV
 
 docs: ## generate Doxygen HTML documentation, including API docs
 	rm -rf docs/

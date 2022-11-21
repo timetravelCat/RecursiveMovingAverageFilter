@@ -13,37 +13,29 @@ namespace RMAF
     static constexpr uint32_t SIZE = sizeof...(max_capacity);
     static constexpr uint32_t BUFFERS[] = { max_capacity... };
 
-    explicit RecursiveMovingAverageFilterND() = default;
-    explicit RecursiveMovingAverageFilterND(const char* name, int32_t capacities...)
+    explicit RecursiveMovingAverageFilterND() = delete;
+    explicit RecursiveMovingAverageFilterND(const char *name)
     {
-      static_assert(SIZE <= 10);
+      int32_t _capacities[SIZE];
+      for (uint32_t i = 0; i < SIZE; i++)
+        _capacities[i] = static_cast<int32_t>(BUFFERS[i]);
 
-      _queue[0] = new BufferQueue<FixedFloat<digits>, BUFFERS[0]>(capacities, name);
+      initialize<SIZE, max_capacity...>(_capacities, name);
+    }
+    explicit RecursiveMovingAverageFilterND(const char *name, int32_t capacities...)
+    {
+      int32_t _capacities[SIZE];
+      _capacities[0] = capacities;
 
       va_list args;
-
       va_start(args, capacities);
 
-      if constexpr (SIZE >= 2)
-        _queue[1] = new BufferQueue<FixedFloat<digits>, BUFFERS[1]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 3)
-        _queue[2] = new BufferQueue<FixedFloat<digits>, BUFFERS[2]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 4)
-        _queue[3] = new BufferQueue<FixedFloat<digits>, BUFFERS[3]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 5)
-        _queue[4] = new BufferQueue<FixedFloat<digits>, BUFFERS[4]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 6)
-        _queue[5] = new BufferQueue<FixedFloat<digits>, BUFFERS[5]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 7)
-        _queue[6] = new BufferQueue<FixedFloat<digits>, BUFFERS[6]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 8)
-        _queue[7] = new BufferQueue<FixedFloat<digits>, BUFFERS[7]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 9)
-        _queue[8] = new BufferQueue<FixedFloat<digits>, BUFFERS[8]>(va_arg(args, int32_t), name);
-      if constexpr (SIZE >= 10)
-        _queue[9] = new BufferQueue<FixedFloat<digits>, BUFFERS[9]>(va_arg(args, int32_t), name);
+      for (uint32_t i = 1; i < SIZE; i++)
+        _capacities[i] = va_arg(args, int32_t);
 
       va_end(args);
+
+      initialize<SIZE, max_capacity...>(_capacities, name);
     }
 
     void reset(int32_t capacities...)
@@ -62,7 +54,7 @@ namespace RMAF
         _FixedSum[i]._sum = 0;
     }
 
-    bool push(const float& in, float* result = nullptr)
+    bool push(const float &in, float *result = nullptr)
     {
       return push(in, result, 0);
     }
@@ -74,13 +66,28 @@ namespace RMAF
     }
 
    private:
-    bool push(const float& in, float* result, uint32_t depth)
+    template<uint32_t F, uint32_t First, uint32_t... Rest>
+    void initialize(int32_t *capacities, const char *name)
+    {
+      _queue[SIZE - F] = new BufferQueue<FixedFloat<digits>, First>(capacities[SIZE - F], name);
+      initialize<F - 1, Rest...>(capacities, name);
+    }
+
+    template<uint32_t F>
+    static void initialize(int32_t *capacities, const char *name)
+    {
+      (void)capacities;
+      (void)name;
+    }
+
+    bool push(const float &in, float *result, uint32_t depth)
     {
       bool res = false;
       FixedFloat<digits> fixedFloat{ in };
       _FixedSum[depth] += fixedFloat;
 
       FixedFloat<digits> out;
+
       if (_queue[depth]->enqueue(FixedFloat<digits>{ in }, &out))
       {
         _FixedSum[depth] -= out;
@@ -92,10 +99,11 @@ namespace RMAF
         {
           return push(_in, result, depth);
         }
-        else  // depth == DEPTH
-        {
+        else
+        {  // depth == DEPTH
           if (result)
             *result = _in;
+
           res = true;
         }
       }
@@ -103,7 +111,8 @@ namespace RMAF
       return res;
     }
 
-    internal::QueueInterface<FixedFloat<digits>>* _queue[SIZE] = { nullptr };
+    internal::QueueInterface<FixedFloat<digits>> *_queue[SIZE] = { nullptr };
     typename FixedFloat<digits>::FixedSum _FixedSum[SIZE];
   };
+
 };  // namespace RMAF

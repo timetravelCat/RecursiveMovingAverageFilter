@@ -6,9 +6,11 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   RMAF
-  VERSION 1.0.0
+  VERSION 1.1.0
   LANGUAGES CXX
 )
+
+set (CMAKE_CXX_STANDARD 14)
 
 #
 # Set project options
@@ -124,16 +126,6 @@ message(STATUS "Added all header and implementation files.\n")
 #
 # Set the project standard and warnings
 #
-
-if(${PROJECT_NAME}_BUILD_HEADERS_ONLY)
-  target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_11)
-else()
-  target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
-
-  if(${PROJECT_NAME}_BUILD_EXECUTABLE AND ${PROJECT_NAME}_ENABLE_UNIT_TESTING)
-    target_compile_features(${PROJECT_NAME}_LIB PUBLIC cxx_std_11)
-  endif()
-endif()
 include(cmake/CompilerWarnings.cmake)
 set_project_warnings(${PROJECT_NAME})
 
